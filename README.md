@@ -32,9 +32,9 @@ This project is **source-available** — you can read it, learn from it, run it 
 **Sivabalaji**
 - GitHub: [@sivabalaji-tn](https://github.com/sivabalaji-tn)
 - Built in: Tamil Nadu, India 🇮🇳
-- Powered by: Coffee, curiosity, and Claude ☕🤖
+- Powered by: Coffee, curiosity, and late nights ☕🌙
 
-> *"I asked an AI to help me build a ₹1,50,000 project. It said sure, give me a few hours."*
+> *"I built a ₹1,50,000 project over a few days and a lot of chai."*
 
 ---
 
