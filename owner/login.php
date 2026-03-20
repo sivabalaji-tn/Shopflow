@@ -5,6 +5,7 @@ require '../config/db.php';
 if (isset($_SESSION['owner_id'])) {
     header("Location: dashboard.php");
     exit;
+    //This script is made by Siva Balaji sm
 }
 
 $error = '';
