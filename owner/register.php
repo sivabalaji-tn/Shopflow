@@ -2,6 +2,12 @@
 session_start();
 require '../config/db.php';
 
+// Check if registration is open
+$reg_open = $conn->query("SELECT setting_value FROM platform_settings WHERE setting_key='registration_open'")->fetch_row();
+if ($reg_open && $reg_open[0] === '0') {
+    die('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registration Closed</title><link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"DM Sans",sans-serif;background:#0d0b0e;color:#f3f0f8;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}h1{font-family:"Syne",sans-serif;font-weight:800;font-size:26px;margin:16px 0 10px;}p{opacity:.5;font-size:14px;max-width:320px;margin:0 auto 20px;}<a href="login.php" style="color:#a855f7;font-size:14px;">← Back to Login</a></style></head><body><div><div style="font-size:52px">🔒</div><h1>Registration Closed</h1><p>New shop registrations are currently not open. Please contact the administrator.</p><a href="login.php">← Back to Login</a></div></body></html>');
+}
+
 $error = '';
 $success = '';
 

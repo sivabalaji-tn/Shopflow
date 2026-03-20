@@ -50,9 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $conn->begin_transaction();
         try {
+            // Get next shop order number
+            $next_num = $conn->query("SELECT COALESCE(MAX(shop_order_number), 0) + 1 FROM orders WHERE shop_id=$shop_id")->fetch_row()[0];
+
             // Insert order
-            $ostmt = $conn->prepare("INSERT INTO orders (shop_id, user_id, total_amount, status, payment_method, address, notes) VALUES (?,?,?,'pending','cod',?,?)");
-            $ostmt->bind_param("iidss", $shop_id, $user_id, $subtotal, $address, $notes);
+            $ostmt = $conn->prepare("INSERT INTO orders (shop_id, user_id, total_amount, status, payment_method, address, notes, shop_order_number) VALUES (?,?,?,'pending','cod',?,?,?)");
+            $ostmt->bind_param("iidssl", $shop_id, $user_id, $subtotal, $address, $notes, $next_num);
             $ostmt->execute();
             $order_id = $ostmt->insert_id;
 
@@ -155,7 +158,7 @@ requireCustomerLogin($shop);
         <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;margin-bottom:8px;letter-spacing:-0.5px;">Order Placed!</h2>
         <p style="color:var(--text-muted);font-size:15px;">Thank you for shopping with us.</p>
         <div style="display:inline-flex;align-items:center;gap:8px;background:var(--primary-light);color:var(--primary);padding:8px 20px;border-radius:99px;font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-top:12px;">
-            <i class="bi bi-receipt"></i> Order #<?= $order_id ?>
+            <i class="bi bi-receipt"></i> Order #<?= str_pad($next_num, 4, '0', STR_PAD_LEFT) ?>
         </div>
     </div>
     <div style="padding:28px 32px;">

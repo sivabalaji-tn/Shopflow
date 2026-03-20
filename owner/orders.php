@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $stmt = $conn->prepare("UPDATE orders SET status=? WHERE id=? AND shop_id=?");
             $stmt->bind_param("sii", $status, $oid, $shop_id);
             $stmt->execute();
-            $success = "Order #$oid status updated to " . ucfirst(str_replace('_',' ',$status));
+            $num = $conn->query("SELECT shop_order_number FROM orders WHERE id=$oid AND shop_id=$shop_id")->fetch_row()[0] ?? $oid;
+            $success = "Order #" . str_pad($num, 4, '0', STR_PAD_LEFT) . " status updated to " . ucfirst(str_replace('_',' ',$status));
         }
     }
 }
@@ -116,7 +117,7 @@ foreach ($status_tabs as $s) {
                 <?php while ($order = $orders->fetch_assoc()): ?>
                 <tr>
                     <td style="padding-left:24px;">
-                        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);">#<?= $order['id'] ?></div>
+                        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent);">#<?= str_pad($order['shop_order_number'] ?? $order['id'], 4, '0', STR_PAD_LEFT) ?></div>
                         <div style="font-size:11.5px;color:var(--muted);"><?= date('M j, Y', strtotime($order['created_at'])) ?></div>
                     </td>
                     <td>
@@ -208,60 +209,4 @@ foreach ($status_tabs as $s) {
     </div>
 </div>
 
-<?php
-$extra_scripts = '
-<script>
-function openStatusModal(id, currentStatus) {
-    document.getElementById("modal_order_id").value = id;
-    document.getElementById("modal_order_display").textContent = "#" + id;
-    document.getElementById("modal_status").value = currentStatus;
-    openModal("statusModal");
-}
-
-function viewOrder(id, data) {
-    const statusLabels = {
-        pending:"Pending", processing:"Processing",
-        out_for_delivery:"Out for Delivery",
-        delivered:"Delivered", cancelled:"Cancelled"
-    };
-    const content = `
-        <div style="display:grid;gap:14px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px;">
-                    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Order ID</div>
-                    <div style="font-family:\'Syne\',sans-serif;font-weight:700;color:var(--accent);font-size:18px;">#${id}</div>
-                </div>
-                <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px;">
-                    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Amount</div>
-                    <div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:18px;">₹${parseFloat(data.total_amount).toFixed(2)}</div>
-                </div>
-            </div>
-            <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px;">
-                <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Customer</div>
-                <div style="font-weight:500;">${data.customer_name}</div>
-                <div style="font-size:12.5px;color:var(--muted);margin-top:3px;">${data.customer_email || ""}</div>
-                <div style="font-size:12.5px;color:var(--muted);">${data.customer_phone || ""}</div>
-            </div>
-            <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px;">
-                <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Delivery Address</div>
-                <div style="font-size:13.5px;">${data.address || "Not provided"}</div>
-            </div>
-            ${data.notes ? `<div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:14px;">
-                <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Notes</div>
-                <div style="font-size:13.5px;color:var(--muted);">${data.notes}</div>
-            </div>` : ""}
-            <div style="display:flex;gap:10px;margin-top:8px;">
-                <button class="btn-primary-custom" style="flex:1;justify-content:center;" onclick="closeModal(\'viewModal\');openStatusModal(${id},\'${data.status}\')">
-                    <i class="bi bi-pencil"></i> Update Status
-                </button>
-                <button class="btn-ghost-custom" onclick="closeModal(\'viewModal\')" style="padding:10px 18px;">Close</button>
-            </div>
-        </div>
-    `;
-    document.getElementById("orderDetailContent").innerHTML = content;
-    openModal("viewModal");
-}
-</script>';
-
-require 'includes/footer.php';
-?>
+<?php require 'includes/footer.php'; ?>

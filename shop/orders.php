@@ -16,14 +16,12 @@ $settings_map = [];
 $sr = $conn->query("SELECT setting_key,setting_value FROM shop_settings WHERE shop_id=$shop_id");
 while ($r = $sr->fetch_assoc()) $settings_map[$r['setting_key']] = $r['setting_value'];
 
-
-$user_id = $_SESSION['user_id'];
-
-$orders = $conn->query("SELECT * FROM orders WHERE user_id=$user_id AND shop_id=$shop_id ORDER BY created_at DESC");
-
 $page_title = 'My Orders';
 require 'includes/shop_head.php';
 requireCustomerLogin($shop);
+
+$user_id = $_SESSION['user_id'];
+$orders = $conn->query("SELECT * FROM orders WHERE user_id=$user_id AND shop_id=$shop_id ORDER BY created_at DESC");
 ?>
 
 <style>
@@ -146,7 +144,7 @@ requireCustomerLogin($shop);
     <div class="order-card fade-up" style="animation-delay:<?= ($oi * 0.05) ?>s;">
         <div class="order-card-header" onclick="toggleOrder('order<?= $order['id'] ?>')">
             <div>
-                <div class="order-id"><i class="bi bi-receipt" style="font-size:14px;margin-right:6px;"></i>Order #<?= $order['id'] ?></div>
+                <div class="order-id"><i class="bi bi-receipt" style="font-size:14px;margin-right:6px;"></i>Order #<?= str_pad($order['shop_order_number'] ?? $order['id'], 4, '0', STR_PAD_LEFT) ?></div>
                 <div class="order-date"><?= date('D, M j, Y \a\t g:i A', strtotime($order['created_at'])) ?></div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">

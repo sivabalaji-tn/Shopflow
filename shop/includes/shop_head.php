@@ -2,10 +2,72 @@
 // shop/includes/shop_head.php
 // Requires: $shop array, $conn, session started
 
+// ── Maintenance mode check ────────────────────────────────────
+$maint_row = $conn->query("SELECT setting_value FROM platform_settings WHERE setting_key='maintenance_mode'")->fetch_row();
+if ($maint_row && $maint_row[0] === '1') {
+    $maint_msg_row = $conn->query("SELECT setting_value FROM platform_settings WHERE setting_key='maintenance_message'")->fetch_row();
+    $maint_msg = $maint_msg_row ? $maint_msg_row[0] : 'We are under maintenance. Back soon!';
+    http_response_code(503);
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Under Maintenance — <?= htmlspecialchars($shop['name']) ?></title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:<?= htmlspecialchars($shop['theme_bg']??'#faf7f2') ?>;color:<?= htmlspecialchars($shop['theme_text']??'#1a1208') ?>;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
+    .icon{font-size:56px;margin-bottom:20px;animation:spin 4s linear infinite;display:inline-block;}
+    @keyframes spin{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+    h1{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;margin-bottom:10px;}
+    p{font-size:15px;opacity:.55;line-height:1.65;max-width:360px;margin:0 auto;}
+    </style>
+    </head>
+    <body>
+    <div>
+        <div class="icon">🔧</div>
+        <h1><?= htmlspecialchars($shop['name']) ?></h1>
+        <p><?= htmlspecialchars($maint_msg) ?></p>
+    </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
+// ── Shop suspended check ──────────────────────────────────────
+if (!empty($shop['is_suspended'])) {
+    http_response_code(503);
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Shop Unavailable</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;background:#faf7f2;color:#1a1208;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}h1{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;margin:16px 0 10px;}p{font-size:14px;opacity:.5;max-width:320px;margin:0 auto;}</style>
+    </head>
+    <body>
+    <div>
+        <div style="font-size:52px;margin-bottom:4px;">🚫</div>
+        <h1>Shop Unavailable</h1>
+        <p>This shop is currently unavailable. Please check back later.</p>
+    </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
+
 // Auth guard helper - soft (redirects to login if not logged in)
 function requireCustomerLogin($shop) {
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../auth/login.php?shop=" . urlencode($shop['slug']));
+        $login_url = "../auth/login.php?shop=" . urlencode($shop['slug']);
+        echo '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+        echo '<meta http-equiv="refresh" content="0;url=' . htmlspecialchars($login_url) . '">';
+        echo '</head><body></body></html>';
         exit;
     }
 }

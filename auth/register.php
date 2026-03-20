@@ -288,7 +288,7 @@ $font    = $shop['theme_font']    ?? 'Inter';
         </div>
         <?php else: ?>
 
-        <form method="POST" id="regForm" novalidate>
+        <form method="POST" action="register.php?shop=<?= htmlspecialchars($shop_slug) ?>" id="regForm" novalidate>
 
             <div class="section-label animate-in d2">Personal Info</div>
 

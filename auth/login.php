@@ -352,13 +352,18 @@ $font      = $shop['theme_font']      ?? 'Inter';
         .d2 { animation-delay: 0.15s; }
         .d3 { animation-delay: 0.25s; }
 
+        /* When there's an error, skip animation delays so fields show instantly */
+        <?php if ($error): ?>
+        .animate-in { animation-duration: 0.01s !important; animation-delay: 0s !important; }
+        <?php endif; ?>
+
         .shake { animation: shake 0.4s ease; }
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-7px); }
-            40% { transform: translateX(7px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
+            0%, 100% { transform: translateX(0); opacity: 1; }
+            20% { transform: translateX(-7px); opacity: 1; }
+            40% { transform: translateX(7px); opacity: 1; }
+            60% { transform: translateX(-4px); opacity: 1; }
+            80% { transform: translateX(4px); opacity: 1; }
         }
 
         @media (max-width: 500px) {
@@ -410,7 +415,7 @@ $font      = $shop['theme_font']      ?? 'Inter';
         </div>
         <?php endif; ?>
 
-        <form method="POST" id="loginForm" novalidate>
+        <form method="POST" action="login.php?shop=<?= htmlspecialchars($shop_slug) ?>" id="loginForm" novalidate>
 
             <div class="input-wrap animate-in d2">
                 <input type="email" name="email" class="form-control-custom"
