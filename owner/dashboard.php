@@ -9,6 +9,7 @@ $topbar_action_icon    = 'plus-lg';
 $topbar_action_onclick = "window.location='products.php?action=add'";
 
 require 'includes/sidebar.php';
+//This script is made by Siva Balaji sm
 
 $shop_id = $_SESSION['shop_id'];
 
