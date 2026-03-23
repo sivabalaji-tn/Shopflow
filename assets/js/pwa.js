@@ -1,4 +1,4 @@
-// pwa.js — ShopFlow PWA Installer
+// pwa.js — TamizhMart PWA Installer
 // Include this in every shop page (via shop_foot.php)
 
 (function () {
@@ -8,7 +8,7 @@
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker
-                .register('/shopflow/sw.js', { scope: '/shopflow/' })
+                .register('/tamizhmart/sw.js', { scope: '/tamizhmart/' })
                 .then(reg => {
                     console.log('[PWA] Service Worker registered:', reg.scope);
 

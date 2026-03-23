@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Your Shop &mdash; ShopFlow</title>
+    <title>Create Your Shop &mdash; TamizhMart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -497,7 +497,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="left-panel">
         <div class="brand-mark animate-in">
             <div class="brand-icon"><i class="bi bi-bag-heart-fill"></i></div>
-            <span class="brand-name">ShopFlow</span>
+            <span class="brand-name">TamizhMart</span>
         </div>
 
         <h1 class="left-headline animate-in delay-1">

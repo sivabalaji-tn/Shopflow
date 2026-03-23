@@ -144,7 +144,7 @@ function buildOrderEmail($conn, $order_id, $shop) {
 
 
 // ── Simple send wrapper ─────────────────────────────────────
-// To actually send emails, replace mail() with PHPMailer:
+// To actually send emails, replace mail() with PHPMailer:s
 // https://github.com/PHPMailer/PHPMailer/blob/master/examples/gmail.phps
 function sendOrderEmail($to_email, $to_name, $subject, $html_body) {
     $headers  = "MIME-Version: 1.0\r\n";

@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super Admin Login — ShopFlow</title>
+<title>Super Admin Login — TamizhMart</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -139,7 +139,7 @@ label { font-size:12px; font-weight:600; color:rgba(243,240,248,0.45); display:b
 <div class="card">
     <div class="logo">👑</div>
     <h1>Control Panel</h1>
-    <p class="sub">ShopFlow Super Administrator</p>
+    <p class="sub">TamizhMart Super Administrator</p>
     <div class="restricted">
         <i class="bi bi-shield-lock-fill"></i>
         Restricted Access — Authorised Personnel Only
@@ -149,10 +149,10 @@ label { font-size:12px; font-weight:600; color:rgba(243,240,248,0.45); display:b
     <div class="err"><i class="bi bi-exclamation-circle-fill"></i><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
-    <form method="POST">
+    <form method="POST" action="login.php">
         <div class="fg">
             <label>Admin Email</label>
-            <input type="email" name="email" class="inp" placeholder="admin@shopflow.com"
+            <input type="email" name="email" class="inp" placeholder="admin@tamizhmart.com"
                 value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required autofocus>
         </div>
         <div class="fg">

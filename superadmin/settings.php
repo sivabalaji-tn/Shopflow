@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'save_settings') {
         $settings = [
-            'site_name'           => trim($_POST['site_name'] ?? 'ShopFlow'),
+            'site_name'           => trim($_POST['site_name'] ?? 'TamizhMart'),
             'contact_email'       => trim($_POST['contact_email'] ?? ''),
             'maintenance_mode'    => isset($_POST['maintenance_mode']) ? '1' : '0',
             'maintenance_message' => trim($_POST['maintenance_message'] ?? ''),
@@ -56,7 +56,7 @@ while ($r = $sr->fetch_assoc()) $settings_map[$r['setting_key']] = $r['setting_v
 $total_shops   = $conn->query("SELECT COUNT(*) FROM shops")->fetch_row()[0];
 $total_users   = $conn->query("SELECT COUNT(*) FROM users")->fetch_row()[0];
 $total_owners  = $conn->query("SELECT COUNT(*) FROM owners")->fetch_row()[0];
-$db_size       = $conn->query("SELECT ROUND(SUM(data_length+index_length)/1024/1024,2) FROM information_schema.tables WHERE table_schema='shopflow_db'")->fetch_row()[0];
+$db_size       = $conn->query("SELECT ROUND(SUM(data_length+index_length)/1024/1024,2) FROM information_schema.tables WHERE table_schema='tamizhmart_db'")->fetch_row()[0];
 ?>
 
 <?php if ($success): ?>
@@ -80,13 +80,13 @@ $db_size       = $conn->query("SELECT ROUND(SUM(data_length+index_length)/1024/1
                     <div>
                         <div class="form-label-custom">Platform Name</div>
                         <input type="text" name="site_name" class="input-custom"
-                            value="<?= htmlspecialchars($settings_map['site_name'] ?? 'ShopFlow') ?>" required>
+                            value="<?= htmlspecialchars($settings_map['site_name'] ?? 'TamizhMart') ?>" required>
                     </div>
                     <div>
                         <div class="form-label-custom">Contact / Support Email</div>
                         <input type="email" name="contact_email" class="input-custom"
                             value="<?= htmlspecialchars($settings_map['contact_email'] ?? '') ?>"
-                            placeholder="admin@shopflow.com">
+                            placeholder="admin@tamizhmart.com">
                     </div>
 
                     <!-- Maintenance Mode -->

@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insert order
             $ostmt = $conn->prepare("INSERT INTO orders (shop_id, user_id, total_amount, status, payment_method, address, notes, shop_order_number) VALUES (?,?,?,'pending','cod',?,?,?)");
-            $ostmt->bind_param("iidssl", $shop_id, $user_id, $subtotal, $address, $notes, $next_num);
+            $ostmt->bind_param("iidssi", $shop_id, $user_id, $subtotal, $address, $notes, $next_num);
             $ostmt->execute();
             $order_id = $ostmt->insert_id;
 

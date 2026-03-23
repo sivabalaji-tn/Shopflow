@@ -6,7 +6,7 @@ $page_title    = 'Analytics';
 $page_subtitle = 'Deep insights into your store performance';
 
 require 'includes/sidebar.php';
-//This script is made by Siva Balaji sm
+//This script is made by Siva Balaji sms
 
 $shop_id = $_SESSION['shop_id'];
 

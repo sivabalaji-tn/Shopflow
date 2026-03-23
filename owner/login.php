@@ -5,7 +5,6 @@ require '../config/db.php';
 if (isset($_SESSION['owner_id'])) {
     header("Location: dashboard.php");
     exit;
-    //This script is made by Siva Balaji sm
 }
 
 $error = '';
@@ -24,7 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['owner_id']   = $owner['id'];
         $_SESSION['owner_name'] = $owner['name'];
         $_SESSION['shop_id']    = $owner['shop_id'];
-        header("Location: dashboard.php");
+        // Redirect to setup wizard if not completed
+        $sid = $owner['shop_id'];
+        $setup = $conn->query("SELECT setting_value FROM shop_settings WHERE shop_id=$sid AND setting_key='setup_complete'")->fetch_assoc();
+        if (!$setup || $setup['setting_value'] !== '1') {
+            header("Location: setup.php");
+        } else {
+            header("Location: dashboard.php");
+        }
         exit;
     } else {
         $error = "Invalid email or password. Please try again.";
@@ -36,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Owner Login &mdash; ShopFlow</title>
+    <title>Owner Login &mdash; TamizhMart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -380,7 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="brand-mark animate-in">
         <div class="brand-icon"><i class="bi bi-bag-heart-fill"></i></div>
-        <span class="brand-name">ShopFlow</span>
+        <span class="brand-name">TamizhMart</span>
     </div>
 
     <div class="glass-card animate-in d1" style="position:relative;" id="loginCard">

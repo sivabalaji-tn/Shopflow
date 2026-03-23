@@ -17,7 +17,7 @@ $pending_orders = $conn->query("SELECT COUNT(*) FROM orders WHERE status='pendin
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $page_title ?? 'Super Admin' ?> &mdash; ShopFlow Control</title>
+    <title><?= $page_title ?? 'Super Admin' ?> &mdash; TamizhMart Control</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -330,7 +330,7 @@ $pending_orders = $conn->query("SELECT COUNT(*) FROM orders WHERE status='pendin
     <div class="sidebar-brand">
         <div class="brand-icon">👑</div>
         <div>
-            <div class="brand-text">ShopFlow</div>
+            <div class="brand-text">TamizhMart</div>
             <div class="brand-sub">Control Panel</div>
         </div>
     </div>
@@ -400,7 +400,7 @@ if ($maint === '1'):
 <div class="topbar">
     <div>
         <div class="topbar-title"><?= $page_title ?? 'Dashboard' ?></div>
-        <div class="topbar-sub"><?= $page_subtitle ?? 'ShopFlow Super Admin Panel' ?></div>
+        <div class="topbar-sub"><?= $page_subtitle ?? 'TamizhMart Super Admin Panel' ?></div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
         <button class="mobile-menu-btn btn-ghost-custom" onclick="document.getElementById('sidebar').classList.toggle('open')">

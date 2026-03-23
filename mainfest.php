@@ -14,8 +14,8 @@ if ($slug) {
     $shop = $stmt->get_result()->fetch_assoc();
 }
 
-$name       = $shop ? $shop['name']           : 'ShopFlow';
-$short_name = $shop ? mb_substr($shop['name'], 0, 12) : 'ShopFlow';
+$name       = $shop ? $shop['name']           : 'TamizhMart';
+$short_name = $shop ? mb_substr($shop['name'], 0, 12) : 'TamizhMart';
 $color      = $shop ? ($shop['theme_primary'] ?? '#c8a97e') : '#c8a97e';
 $bg_color   = $shop ? ($shop['theme_bg']      ?? '#faf7f2') : '#faf7f2';
 $start_url  = $shop ? "./shop/index.php?shop={$shop['slug']}" : './index.php';

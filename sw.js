@@ -1,14 +1,14 @@
-// sw.js — ShopFlow Service Worker
+// sw.js — TamizhMart Service Worker
 // Handles: offline caching, network-first strategy, offline fallback
 
-const CACHE_VERSION = 'shopflow-v1.2';
+const CACHE_VERSION = 'tamizhmart-v1.2';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const IMAGE_CACHE   = `${CACHE_VERSION}-images`;
 
 // Assets to cache immediately on install
 const STATIC_ASSETS = [
-    '/shopflow/offline.php',
+    '/tamizhmart/offline.php',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
@@ -32,7 +32,7 @@ self.addEventListener('activate', event => {
         caches.keys().then(keys =>
             Promise.all(
                 keys
-                    .filter(k => k.startsWith('shopflow-') && k !== STATIC_CACHE && k !== DYNAMIC_CACHE && k !== IMAGE_CACHE)
+                    .filter(k => k.startsWith('tamizhmart-') && k !== STATIC_CACHE && k !== DYNAMIC_CACHE && k !== IMAGE_CACHE)
                     .map(k => { console.log('[SW] Deleting old cache:', k); return caches.delete(k); })
             )
         ).then(() => self.clients.claim())
@@ -103,7 +103,7 @@ async function networkFirst(request) {
         const staticCached = await caches.match(request);
         if (staticCached) return staticCached;
         // Last resort: offline page
-        const offlinePage = await caches.match('/shopflow/offline.php');
+        const offlinePage = await caches.match('/tamizhmart/offline.php');
         return offlinePage || new Response('<h2 style="text-align:center;padding:40px;font-family:sans-serif;">You are offline</h2>', {
             headers: { 'Content-Type': 'text/html' }
         });
@@ -120,19 +120,19 @@ self.addEventListener('sync', event => {
 // ── Push Notifications (future-ready) ───────────────────────
 self.addEventListener('push', event => {
     const data = event.data?.json() || {};
-    const title   = data.title   || 'ShopFlow';
+    const title   = data.title   || 'TamizhMart';
     const options = {
         body:    data.body    || 'You have a new notification',
-        icon:    data.icon    || '/shopflow/assets/icons/icon-192.png',
-        badge:   '/shopflow/assets/icons/icon-72.png',
+        icon:    data.icon    || '/tamizhmart/assets/icons/icon-192.png',
+        badge:   '/tamizhmart/assets/icons/icon-72.png',
         vibrate: [100, 50, 100],
-        data:    { url: data.url || '/shopflow/' }
+        data:    { url: data.url || '/tamizhmart/' }
     };
     event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', event => {
     event.notification.close();
-    const url = event.notification.data?.url || '/shopflow/';
+    const url = event.notification.data?.url || '/tamizhmart/';
     event.waitUntil(clients.openWindow(url));
 });
