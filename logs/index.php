@@ -1,0 +1,1 @@
+<?php // Protect log directory ?>

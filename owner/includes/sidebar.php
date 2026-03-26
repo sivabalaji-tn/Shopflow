@@ -556,8 +556,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <span class="nav-badge"><?= $pc ?></span>
             <?php endif; ?>
         </a>
+        <a href="customers.php" class="nav-item <?= $current_page === 'customers.php' ? 'active' : '' ?>">
+            <i class="bi bi-people"></i> Customers
+        </a>
+        <a href="export_orders.php?format=print" target="_blank" class="nav-item">
+            <i class="bi bi-file-earmark-arrow-down"></i> Export Orders
+        </a>
         <a href="products.php" class="nav-item <?= $current_page === 'products.php' ? 'active' : '' ?>">
             <i class="bi bi-box-seam"></i> Products
+        </a>
+        <a href="sort_products.php" class="nav-item <?= $current_page === 'sort_products.php' ? 'active' : '' ?>">
+            <i class="bi bi-sort-numeric-down"></i> Sort Products
+        </a>
+        <a href="bulk_upload.php" class="nav-item <?= $current_page === 'bulk_upload.php' ? 'active' : '' ?>">
+            <i class="bi bi-cloud-upload"></i> Bulk Upload
         </a>
         <a href="categories.php" class="nav-item <?= $current_page === 'categories.php' ? 'active' : '' ?>">
             <i class="bi bi-tags"></i> Categories
@@ -572,6 +584,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
         <a href="theme.php" class="nav-item <?= $current_page === 'theme.php' ? 'active' : '' ?>">
             <i class="bi bi-palette2"></i> Theme & Colors
+        </a>
+        <a href="social.php" class="nav-item <?= $current_page === 'social.php' ? 'active' : '' ?>">
+            <i class="bi bi-share"></i> Social Links
         </a>
 
         <div class="nav-section-label">Preview</div>

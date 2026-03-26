@@ -77,6 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $conn->commit();
             $order_placed = true;
+
+            // ── Send notifications ────────────────────────────
+            require_once 'includes/notifications.php';
+            sendOrderNotifications($conn, $order_id, $shop, $user, $items, $subtotal, $settings_map);
         } catch (Exception $e) {
             $conn->rollback();
             $error = 'Order failed. Please try again.';

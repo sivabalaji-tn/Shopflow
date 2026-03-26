@@ -8,7 +8,7 @@ $stmt = $conn->prepare("SELECT * FROM shops WHERE slug=? AND is_active=1");
 $stmt->bind_param("s", $slug);
 $stmt->execute();
 $shop = $stmt->get_result()->fetch_assoc();
-if (!$shop) die('<h2 style="text-align:center;margin-top:60px;">Shop not found.</h2>');
+if (!$shop) die('<h2 style="text-align:center;margin-top:60px;">The Shop has some issues Kindly Visit Back later.</h2>');
 $_SESSION['current_shop_slug'] = $slug;
 $shop_id = $shop['id'];
 

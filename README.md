@@ -1,7 +1,9 @@
-# ShopFlow 🛍️
+# Tamizhmart 🛍️
 ### White-Label E-Commerce Platform
 
-> Built by **[@sivabalaji-tn](https://github.com/sivabalaji-tn)** — one conversation at a time. 😄
+
+> Built by **[@sivabalaji-tn](https://github.com/sivabalaji-tn)** -😄
+> Readme Content by AI
 
 A complete, multi-tenant e-commerce platform where each shop owner gets their own fully branded storefront — customizable colors, fonts, logo, products, and orders — all from a single codebase.
 
@@ -34,7 +36,6 @@ This project is **source-available** — you can read it, learn from it, run it 
 - Built in: Tamil Nadu, India 🇮🇳
 - Powered by: Coffee, curiosity, and late nights ☕🌙
 
-> *"I built a ₹1,50,000 project over a few days and a lot of chai."*
 
 ---
 
@@ -93,14 +94,14 @@ This project is **source-available** — you can read it, learn from it, run it 
 ## 📁 Project Structure
 
 ```
-shopflow/
+Tamizhmart/
 ├── index.php                  # Root entry — routes customer straight to their shop
 ├── manifest.php               # Dynamic PWA manifest (per-shop themed)
 ├── sw.js                      # Service Worker (offline caching)
 ├── offline.php                # Offline fallback page
 ├── 404.php                    # Custom 404 (prettier than your ex's apology)
 ├── .htaccess                  # Apache config (security, caching, compression)
-├── shopflow_schema.sql        # ← Run this first. Seriously. First.
+├── Tamizhmart_schema.sql        # ← Run this first. Seriously. First.
 │
 ├── config/
 │   └── db.php                 # Database connection (put your credentials here)
@@ -167,15 +168,15 @@ shopflow/
 
 ### Step 1 — Place files
 ```bash
-C:/xampp/htdocs/shopflow/
+C:/xampp/htdocs/Tamizhmart/
 # Mac/Linux:
-/Applications/XAMPP/htdocs/shopflow/
+/Applications/XAMPP/htdocs/Tamizhmart/
 ```
 
 ### Step 2 — Create the database
 1. Open **phpMyAdmin** → `http://localhost/phpmyadmin`
-2. Create a new database named `shopflow_db`
-3. Select it → **Import** → upload `shopflow_schema.sql` → **Go**
+2. Create a new database named `Tamizhmart_db`
+3. Select it → **Import** → upload `Tamizhmart_schema.sql` → **Go**
 
 ### Step 3 — Configure database connection
 Edit `config/db.php`:
@@ -183,7 +184,7 @@ Edit `config/db.php`:
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');      // your MySQL username
 define('DB_PASS', '');          // blank for XAMPP default
-define('DB_NAME', 'shopflow_db');
+define('DB_NAME', 'Tamizhmart_db');
 ```
 
 ### Step 4 — Create upload folders
@@ -203,7 +204,7 @@ Or on Windows, right-click → New Folder. You know how it works. 😄
 
 ### Step 6 — Launch!
 ```
-http://localhost/shopflow/
+http://localhost/Tamizhmart/
 ```
 🎉 If it works on the first try, you're either very lucky or a genius.
 
@@ -211,14 +212,14 @@ http://localhost/shopflow/
 
 ## 🔑 First Time Setup
 
-1. Visit `http://localhost/shopflow/` and register as a shop owner
+1. Visit `http://localhost/Tamizhmart/` and register as a shop owner
 2. Login → auto-redirected to the **5-step Setup Wizard**:
    - Step 1: Shop name & description
    - Step 2: Upload logo
    - Step 3: Pick theme colors & font
    - Step 4: Add first category & product
    - Step 5: Announcement bar + phone → **Launch!**
-3. Your shop is live at: `http://localhost/shopflow/?shop=YOUR_SLUG`
+3. Your shop is live at: `http://localhost/Tamizhmart/?shop=YOUR_SLUG`
 
 ---
 
@@ -287,7 +288,7 @@ Each shop has its own theme stored in the database. The owner picks colors in th
 
 ## 🛠️ Rename the Root Folder
 
-Want to rename `shopflow` to something else? Only 3 files need updating — `sw.js`, `pwa.js`, and `.htaccess`. Everything else uses relative paths and is completely safe.
+Want to rename `Tamizhmart` to something else? Only 3 files need updating — `sw.js`, `pwa.js`, and `.htaccess`. Everything else uses relative paths and is completely safe.
 
 ---
 
@@ -325,7 +326,7 @@ Want to rename `shopflow` to something else? Only 3 files need updating — `sw.
 ## 🚢 Deploying to Production
 
 1. Upload files via cPanel / FTP / Git
-2. Create MySQL database and import `shopflow_schema.sql`
+2. Create MySQL database and import `Tamizhmart_schema.sql`
 3. Update `config/db.php` with production credentials
 4. Enable HTTPS — Let's Encrypt via cPanel is free, no excuses
 5. Update `RewriteBase` in `.htaccess` if not at root
@@ -346,5 +347,5 @@ If you steal this and sell it — karma is real and so is copyright law. 🙏
 
 ---
 
-*Built with ❤️ in Tamil Nadu — ShopFlow v1.0*
+*Built with ❤️ in Tamil Nadu — Tamizhmart v1.0*
 *© 2025 Sivabalaji. All rights reserved.*

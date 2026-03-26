@@ -30,7 +30,7 @@ while ($c = $cats_r->fetch_assoc()) $cats_data[] = $c;
 $where = "p.shop_id=$shop_id AND p.is_active=1 AND p.stock>0";
 if ($q)          $where .= " AND p.name LIKE '%" . $conn->real_escape_string($q) . "%'";
 if ($cat_filter) $where .= " AND p.category_id=$cat_filter";
-$products = $conn->query("SELECT p.*, c.name as cat_name FROM products p LEFT JOIN categories c ON p.category_id=c.id WHERE $where ORDER BY p.created_at DESC LIMIT 12");
+$products = $conn->query("SELECT p.*, c.name as cat_name FROM products p LEFT JOIN categories c ON p.category_id=c.id WHERE $where ORDER BY p.sort_order ASC, p.created_at DESC LIMIT 12");
 
 // Best sellers
 $bestsellers = $conn->query("
