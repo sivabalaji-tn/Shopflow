@@ -123,7 +123,7 @@ while ($r = $sr->fetch_assoc()) $settings[$r['setting_key']] = $r['setting_value
                         <div>
                             <div class="form-label-custom">Shop Slug (URL)</div>
                             <div style="padding:11px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--card-border);border-radius:var(--radius-sm);font-size:13.5px;color:var(--muted);">
-                                /<?= htmlspecialchars($shop['slug']) ?>
+                                /<?= htmlspecialchars($shop['slug']) ?> &nbsp;<small style="color:#aaa">(clean URL)</small>
                             </div>
                         </div>
                     </div>
@@ -230,9 +230,9 @@ while ($r = $sr->fetch_assoc()) $settings[$r['setting_key']] = $r['setting_value
             <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);">
                 <i class="bi bi-link-45deg" style="color:var(--accent);flex-shrink:0;"></i>
                 <span style="font-size:13px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                    localhost/shopflow/shop/index.php?shop=<?= htmlspecialchars($shop['slug']) ?>
+                    shop.tamizhmart.optikl.ink/<?= htmlspecialchars($shop['slug']) ?>
                 </span>
-                <button onclick="navigator.clipboard.writeText('localhost/shopflow/shop/index.php?shop=<?= $shop['slug'] ?>').then(()=>this.innerHTML='<i class=\'bi bi-check-lg\'></i>')"
+                <button onclick="navigator.clipboard.writeText('shop.tamizhmart.optikl.ink/<?= $shop['slug'] ?>').then(()=>this.innerHTML='<i class=\'bi bi-check-lg\'></i>')"
                     style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:14px;transition:color 0.2s;" title="Copy">
                     <i class="bi bi-clipboard"></i>
                 </button>
@@ -242,17 +242,4 @@ while ($r = $sr->fetch_assoc()) $settings[$r['setting_key']] = $r['setting_value
     </div>
 </div>
 
-<?php
-$extra_scripts = '
-<script>
-// Announcement toggle visual
-document.getElementById("annToggle").addEventListener("change", function() {
-    const slider = document.getElementById("annSlider");
-    const thumb  = document.getElementById("annThumb");
-    slider.style.background = this.checked ? "var(--accent)" : "rgba(255,255,255,0.1)";
-    thumb.style.left = this.checked ? "23px" : "3px";
-});
-</script>';
-
-require 'includes/footer.php';
-?>
+<?php require 'includes/footer.php'; ?>

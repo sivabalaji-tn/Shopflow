@@ -1,0 +1,22 @@
+# TamizhMart - Clean URL Rewriting
+# Place this file at: /shop/.htaccess
+# (inside the /shop/ folder)
+#
+# Result:  shop.tamizhmart.optikl.ink/sm-store
+# Maps to: shop/index.php?shop=sm-store
+
+Options -Indexes
+RewriteEngine On
+
+# ── Already has ?shop= param, pass through ──────────────────
+RewriteCond %{QUERY_STRING} ^shop=
+RewriteRule ^ - [L]
+
+# ── Static files: let them through ──────────────────────────
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ── /slug → index.php?shop=slug ─────────────────────────────
+RewriteRule ^([a-z0-9-]+)/?$ index.php?shop=$1 [L,QSA]
+

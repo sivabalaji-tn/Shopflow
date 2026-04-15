@@ -212,6 +212,7 @@ foreach ($status_tabs as $s) {
 <?php require 'includes/footer.php'; ?>
 
 <script>
+let currentOrderId = null;
 function openStatusModal(orderId, currentStatus) {
     document.getElementById('modal_order_id').value = orderId;
     document.getElementById('modal_order_display').textContent = '#' + String(orderId).padStart(4, '0');
@@ -220,6 +221,7 @@ function openStatusModal(orderId, currentStatus) {
 }
 
 function viewOrder(orderId, order) {
+    currentOrderId = orderId;
     const statusColors = {
         pending:'#fbbf24',processing:'#60a5fa',
         out_for_delivery:'#a855f7',delivered:'#4ade80',cancelled:'#f87171'
@@ -283,12 +285,21 @@ function viewOrder(orderId, order) {
             </div>
 
             <!-- Actions -->
-            <div style="display:flex;gap:10px;">
-                <button onclick="openStatusModal(${orderId},'${order.status}');closeModal('viewModal');"
-                    class="btn-primary-custom" style="flex:1;justify-content:center;">
-                    <i class="bi bi-pencil"></i> Update Status
-                </button>
-                <button onclick="closeModal('viewModal')" class="btn-ghost-custom" style="padding:10px 18px;">Close</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="openStatusModal(${orderId},'${order.status}');closeModal('viewModal');"
+                class="btn-primary-custom" style="flex:1;justify-content:center;">
+                <i class="bi bi-pencil"></i> Update Status
+            </button>
+
+            <button onclick="printInvoice()"
+                class="btn btn-success" style="flex:1;">
+                <i class="bi bi-printer"></i> Print Invoice
+            </button>
+
+            <button onclick="closeModal('viewModal')" 
+                class="btn-ghost-custom" style="padding:10px 18px;">
+                Close
+            </button>
             </div>
         </div>
     `;
@@ -361,5 +372,9 @@ function handlePick(checkbox, idx) {
         row.style.background  = 'rgba(255,255,255,0.02)';
         badge.style.display   = 'none';
     }
+}
+function printInvoice() {
+    if (!currentOrderId) return;
+    window.open('invoice_pdf.php?order_id=' + currentOrderId, '_blank');
 }
 </script>

@@ -1,6 +1,6 @@
 # ============================================================
-# ShopFlow — Apache .htaccess
-# Place this in /shopflow/ (your project root)
+# TamizhMart — Apache .htaccess
+# Place this in /tamizhmart/ (your project root)
 # ============================================================
 
 Options -Indexes
@@ -10,7 +10,7 @@ ServerSignature Off
 # ── Rewrite Engine ───────────────────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /shopflow/
+    RewriteBase /tamizhmart/
 
     # Force HTTPS (uncomment on live server)
     # RewriteCond %{HTTPS} off
@@ -31,9 +31,22 @@ ServerSignature Off
     # Serve sw.js from root with correct scope
     RewriteRule ^sw\.js$ sw.js [L]
 
+    # ── Clean Shop URLs ──────────────────────────────────────
+    # Before:  /shop/index.php?shop=sm-store-1772034769
+    # After:   /sm-store   OR   /shop/sm-store
+    #
+    # Option A: /slug  →  shop/index.php?shop=slug  (root access)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/(owner|superadmin|auth|assets|uploads|config|shop/index\.php)
+    RewriteRule ^([a-z0-9][a-z0-9-]*)/?$ shop/index.php?shop=$1 [L,QSA]
+    #
+    # Option B: /shop/slug  →  shop/index.php?shop=slug
+    RewriteRule ^shop/([a-z0-9][a-z0-9-]*)/?$ shop/index.php?shop=$1 [L,QSA]
+
     # 404 handler
-    ErrorDocument 404 /shopflow/404.php
-    ErrorDocument 403 /shopflow/404.php
+    ErrorDocument 404 /tamizhmart/404.php
+    ErrorDocument 403 /tamizhmart/404.php
 </IfModule>
 
 # ── Security Headers ─────────────────────────────────────────

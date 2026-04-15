@@ -590,7 +590,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
 
         <div class="nav-section-label">Preview</div>
-        <a href="../shop/index.php?shop=<?= $shop['slug'] ?>" class="nav-item" target="_blank">
+        <a href="../shop/<?= $shop['slug'] ?>" class="nav-item" target="_blank">
             <i class="bi bi-box-arrow-up-right"></i> View My Shop
         </a>
     </nav>
@@ -619,7 +619,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
         </div>
         <div class="topbar-right">
-            <a href="../shop/index.php?shop=<?= $shop['slug'] ?>" target="_blank" class="topbar-btn topbar-btn-ghost">
+            <a href="../shop/<?= $shop['slug'] ?>" target="_blank" class="topbar-btn topbar-btn-ghost">
                 <i class="bi bi-eye"></i> <span class="d-none d-md-inline">Preview Shop</span>
             </a>
             <?php if (isset($topbar_action_label)): ?>

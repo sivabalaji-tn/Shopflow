@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email      = trim($_POST['email']);
     $password   = $_POST['password'];
     $shop_name  = trim($_POST['shop_name']);
-    $shop_slug  = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $shop_name));
+    $shop_slug  = strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '-', $shop_name), '-'));
 
     $check = $conn->prepare("SELECT id FROM owners WHERE email = ?");
     $check->bind_param("s", $email);
@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $slugCheck->execute();
         $slugCheck->store_result();
         if ($slugCheck->num_rows > 0) {
-            $shop_slug = $shop_slug . '-' . time();
+            // Use a short random suffix (e.g. sm-store-x4k) instead of timestamp
+            $shop_slug = $shop_slug . '-' . substr(base_convert(mt_rand(0, PHP_INT_MAX), 10, 36), 0, 3);
         }
 
         $hashed = password_hash($password, PASSWORD_DEFAULT);

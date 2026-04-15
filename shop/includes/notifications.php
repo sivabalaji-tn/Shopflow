@@ -2,20 +2,23 @@
 // includes/notifications.php
 // Call sendOrderNotifications($conn, $order_id, $shop, $user, $items, $total) after order is placed
 
-function sendWhatsAppNotification($shop_phone, $message) {
-    // Uses CallMeBot free WhatsApp API (no account needed for testing)
-    // For production use Twilio or WhatsApp Business API
-    if (empty($shop_phone)) return false;
+/**
+ * Builds a wa.me click-to-chat URL for the given phone + message.
+ * Returns the URL string, or false if phone is empty.
+ * No API key needed — opens WhatsApp on the owner's device.
+ */
+function buildWhatsAppURL($phone, $message) {
+    if (empty(trim($phone))) return false;
 
-    // Clean phone number - remove spaces, dashes, brackets
-    $phone = preg_replace('/[^0-9+]/', '', $shop_phone);
+    // Strip everything except digits and leading +
+    $clean = preg_replace('/[^0-9]/', '', $phone);
 
-    // Get API key from shop settings - owner sets this up once
-    // For now using CallMeBot - owner must register at callmebot.com
-    // Just log to file if no API key set
-    $log = date('Y-m-d H:i:s') . " | WhatsApp to $phone: $message\n";
-    file_put_contents(__DIR__ . '/../../logs/whatsapp.log', $log, FILE_APPEND);
-    return true;
+    // If number starts with 0 (local Indian format), replace with 91
+    if (strlen($clean) === 10) {
+        $clean = '91' . $clean;
+    }
+
+    return 'https://wa.me/' . $clean . '?text=' . rawurlencode($message);
 }
 
 function sendOrderEmail($to_email, $to_name, $shop_name, $order_num, $items, $total, $address) {
@@ -101,6 +104,11 @@ function sendOrderEmail($to_email, $to_name, $shop_name, $order_num, $items, $to
     return mail($to_email, $subject, $body, $headers);
 }
 
+/**
+ * Sends all post-order notifications.
+ * Returns ['whatsapp_url' => string|false] so checkout.php
+ * can open the link client-side.
+ */
 function sendOrderNotifications($conn, $order_id, $shop, $user, $items, $total, $shop_settings) {
     $order_num = $conn->query("SELECT shop_order_number FROM orders WHERE id=$order_id")->fetch_row()[0] ?? $order_id;
     $order_num = str_pad($order_num, 4, '0', STR_PAD_LEFT);
@@ -117,14 +125,27 @@ function sendOrderNotifications($conn, $order_id, $shop, $user, $items, $total, 
     );
 
     // ── WhatsApp to shop owner ────────────────────────────────
-    $owner_phone = $shop_settings['phone'] ?? '';
-    if ($owner_phone) {
-        $item_list = implode(', ', array_map(fn($i) => $i['name'] . ' x' . $i['quantity'], $items));
-        $message = "🛍️ New Order #{$order_num} on {$shop['name']}!\n"
-                 . "Customer: {$user['name']}\n"
-                 . "Items: {$item_list}\n"
-                 . "Total: ₹" . number_format($total, 2) . "\n"
-                 . "Payment: COD";
-        sendWhatsAppNotification($owner_phone, $message);
+    // Uses whatsapp_notify_number if set, otherwise falls back to phone.
+    // Only fires if whatsapp_notify_enabled = 1.
+    $wa_url = false;
+    $wa_enabled = ($shop_settings['whatsapp_notify_enabled'] ?? '0') === '1';
+    $wa_phone   = trim($shop_settings['whatsapp_notify_number'] ?? $shop_settings['phone'] ?? '');
+
+    if ($wa_enabled && $wa_phone) {
+        $item_lines = implode("\n", array_map(
+            fn($i) => "  • {$i['name']} × {$i['quantity']}  ₹" . number_format($i['final_price'] * $i['quantity'], 2),
+            $items
+        ));
+        $message = "🛍️ *New Order #{$order_num}* — {$shop['name']}\n\n"
+                 . "👤 Customer: {$user['name']}\n"
+                 . "📱 Phone: " . ($user['phone'] ?? 'N/A') . "\n\n"
+                 . "🧾 Items:\n{$item_lines}\n\n"
+                 . "💰 Total: ₹" . number_format($total, 2) . "\n"
+                 . "💵 Payment: Cash on Delivery\n\n"
+                 . "📍 Deliver to:\n{$user['address']}";
+
+        $wa_url = buildWhatsAppURL($wa_phone, $message);
     }
+
+    return ['whatsapp_url' => $wa_url];
 }

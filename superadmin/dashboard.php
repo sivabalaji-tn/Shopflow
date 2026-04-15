@@ -69,7 +69,7 @@ foreach ($statuses as $st) {
 <div class="animate-in" style="background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(124,58,237,0.08));border:1px solid rgba(168,85,247,0.2);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
     <div>
         <div style="font-size:12px;color:var(--accent2);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Today — <?= date('l, d F Y') ?></div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-top:2px;">Good <?= date('H') < 12 ? 'Morning' : (date('H') < 17 ? 'Afternoon' : 'Evening') ?>, <?= htmlspecialchars($_SESSION['superadmin_name']) ?> 👑</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-top:2px;">Good <?= date('H') < 12 ? 'Morning' : (date('H') < 17 ? 'Afternoon' : 'Evening') ?>, <?= htmlspecialchars($_SESSION['superadmin_name']) ?> 👋</div>
     </div>
     <div style="margin-left:auto;display:flex;gap:20px;flex-wrap:wrap;">
         <div style="text-align:center;">
