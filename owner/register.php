@@ -47,10 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt2->execute();
         $shop_id = $stmt2->insert_id;
 
-        $stmt3 = $conn->prepare("UPDATE owners SET shop_id = ? WHERE id = ?");
-        $stmt3->bind_param("ii", $shop_id, $owner_id);
-        $stmt3->execute();
-
         $success = true;
     }
 }

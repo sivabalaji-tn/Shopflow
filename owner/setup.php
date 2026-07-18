@@ -63,20 +63,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
 
     } elseif ($action === 'step4') { // First category + product
+        // Guard: only run if setup is NOT already complete
+        $already = $conn->query("SELECT setting_value FROM shop_settings WHERE shop_id=$shop_id AND setting_key='setup_complete'")->fetch_assoc();
+        if ($already && $already['setting_value'] === '1') {
+            header("Location: dashboard.php"); exit;
+        }
         $cat_name = trim($_POST['category_name'] ?? '');
         if ($cat_name) {
-            $stmt = $conn->prepare("INSERT INTO categories (shop_id, name, is_active) VALUES (?,?,1)");
-            $stmt->bind_param("is", $shop_id, $cat_name);
-            $stmt->execute();
-            $cat_id = $stmt->insert_id;
+            // Only insert category if it doesn't already exist for this shop with this name
+            $existing_cat = $conn->query("SELECT id FROM categories WHERE shop_id=$shop_id AND name='".addslashes($cat_name)."' LIMIT 1")->fetch_assoc();
+            if ($existing_cat) {
+                $cat_id = $existing_cat['id'];
+            } else {
+                $stmt = $conn->prepare("INSERT INTO categories (shop_id, name, is_active) VALUES (?,?,1)");
+                $stmt->bind_param("is", $shop_id, $cat_name);
+                $stmt->execute();
+                $cat_id = $stmt->insert_id;
+            }
 
             $prod_name  = trim($_POST['product_name'] ?? '');
             $prod_price = (float)($_POST['product_price'] ?? 0);
             $prod_stock = (int)($_POST['product_stock'] ?? 10);
             if ($prod_name && $prod_price > 0) {
-                $stmt2 = $conn->prepare("INSERT INTO products (shop_id, category_id, name, price, stock, is_active) VALUES (?,?,?,?,?,1)");
-                $stmt2->bind_param("iisdi", $shop_id, $cat_id, $prod_name, $prod_price, $prod_stock);
-                $stmt2->execute();
+                // Only insert product if no products exist yet for this shop
+                $existing_prod = $conn->query("SELECT id FROM products WHERE shop_id=$shop_id LIMIT 1")->fetch_assoc();
+                if (!$existing_prod) {
+                    $stmt2 = $conn->prepare("INSERT INTO products (shop_id, category_id, name, price, stock, is_active) VALUES (?,?,?,?,?,1)");
+                    $stmt2->bind_param("iisdi", $shop_id, $cat_id, $prod_name, $prod_price, $prod_stock);
+                    $stmt2->execute();
+                }
             }
         }
         header("Location: setup.php?step=5");
@@ -112,7 +127,7 @@ $steps_info = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup Your Shop &mdash; ShopFlow</title>
+    <title>Setup Your Shop &mdash; TamizhMart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -252,7 +267,7 @@ $steps_info = [
     <div style="text-align:center;margin-bottom:28px;">
         <div style="display:inline-flex;align-items:center;gap:10px;">
             <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8b6428);display:flex;align-items:center;justify-content:center;font-size:18px;">🛍</div>
-            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">ShopFlow Setup</span>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">TamizhMart Setup</span>
         </div>
     </div>
 
@@ -406,7 +421,7 @@ $steps_info = [
             </div>
             <div style="background:var(--accent-dim);border:1px solid rgba(200,169,126,0.2);border-radius:12px;padding:16px;margin-top:4px;">
                 <div style="font-size:13.5px;font-weight:600;margin-bottom:6px;">Your shop URL 🔗</div>
-                <code style="font-size:13px;color:var(--accent);">localhost/shopflow/shop/index.php?shop=<?= htmlspecialchars($shop['slug']) ?></code>
+                <code style="font-size:13px;color:var(--accent);">localhost/tamizhmart/shop/index.php?shop=<?= htmlspecialchars($shop['slug']) ?></code>
             </div>
             <button type="submit" class="btn-next" style="width:100%;justify-content:center;padding:15px;font-size:15px;margin-top:8px;">
                 <i class="bi bi-rocket-takeoff"></i> Launch My Shop!

@@ -80,6 +80,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->query("UPDATE shops SET banner=NULL WHERE id=$shop_id");
         $shop['banner'] = null;
         $success = "Banner removed.";
+
+    } elseif ($action === 'update_razorpay') {
+        $rz_enabled = isset($_POST['razorpay_enabled']) ? '1' : '0';
+        $rz_key_id  = trim($_POST['razorpay_key_id'] ?? '');
+        $rz_secret  = trim($_POST['razorpay_key_secret'] ?? '');
+
+        if ($rz_enabled === '1' && (!str_starts_with($rz_key_id, 'rzp_') || empty($rz_secret))) {
+            $error = "Please enter valid Razorpay Key ID (starts with rzp_) and Secret.";
+        } else {
+            foreach ([
+                'razorpay_enabled'    => $rz_enabled,
+                'razorpay_key_id'     => $rz_key_id,
+                'razorpay_key_secret' => $rz_secret,
+            ] as $k => $v) {
+                $v_esc = $conn->real_escape_string($v);
+                $conn->query("INSERT INTO shop_settings (shop_id, setting_key, setting_value)
+                              VALUES ($shop_id, '$k', '$v_esc')
+                              ON DUPLICATE KEY UPDATE setting_value='$v_esc'");
+            }
+            $success = "Razorpay settings saved.";
+        }
     }
 }
 
@@ -241,5 +262,116 @@ while ($r = $sr->fetch_assoc()) $settings[$r['setting_key']] = $r['setting_value
 
     </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════
+     RAZORPAY PAYMENT SETTINGS CARD
+     ═══════════════════════════════════════════════════ -->
+<div style="margin-top:24px;" class="animate-in d3">
+    <div class="card-glass" style="border-color:rgba(0,123,255,0.15);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(0,123,255,0.1);display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-credit-card-2-front" style="color:#0d6efd;font-size:18px;"></i>
+            </div>
+            <div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;">Online Payment — Razorpay</div>
+                <div style="font-size:12.5px;color:var(--muted);">Accept UPI, Cards, Net Banking &amp; Wallets from your customers</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;font-weight:700;background:#072654;color:#fff;padding:4px 10px;border-radius:5px;letter-spacing:0.5px;">RAZORPAY</span>
+        </div>
+        <hr style="border-color:var(--card-border);margin:16px 0;">
+
+        <?php
+        $rz = [
+            'enabled' => $settings['razorpay_enabled'] ?? '0',
+            'key_id'  => $settings['razorpay_key_id'] ?? '',
+            'secret'  => $settings['razorpay_key_secret'] ?? '',
+        ];
+        ?>
+
+        <!-- Status badge -->
+        <?php if ($rz['enabled'] === '1' && !empty($rz['key_id'])): ?>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#16a34a;padding:5px 12px;border-radius:99px;font-size:12.5px;font-weight:600;margin-bottom:16px;">
+            <span style="width:7px;height:7px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
+            Online payments active
+        </div>
+        <?php else: ?>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(107,114,128,0.1);border:1px solid rgba(107,114,128,0.2);color:var(--muted);padding:5px 12px;border-radius:99px;font-size:12.5px;font-weight:600;margin-bottom:16px;">
+            <span style="width:7px;height:7px;background:var(--muted);border-radius:50%;display:inline-block;"></span>
+            Not enabled — only COD available
+        </div>
+        <?php endif; ?>
+
+        <form method="POST">
+            <input type="hidden" name="action" value="update_razorpay">
+            <div style="display:flex;flex-direction:column;gap:16px;">
+
+                <!-- Enable toggle -->
+                <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:14px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);">
+                    <input type="checkbox" name="razorpay_enabled" value="1" id="rzToggle"
+                        <?= $rz['enabled'] === '1' ? 'checked' : '' ?>
+                        onchange="document.getElementById('rzFields').style.display=this.checked?'flex':'none'"
+                        style="width:18px;height:18px;accent-color:#0d6efd;flex-shrink:0;">
+                    <div>
+                        <div style="font-weight:600;font-size:14px;">Enable Razorpay for my shop</div>
+                        <div style="font-size:12px;color:var(--muted);margin-top:1px;">Customers will see "Pay Online" option at checkout</div>
+                    </div>
+                </label>
+
+                <!-- Key fields (hidden when disabled) -->
+                <div id="rzFields" style="display:<?= $rz['enabled'] === '1' ? 'flex' : 'none' ?>;flex-direction:column;gap:14px;">
+
+                    <div style="background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.25);border-radius:var(--radius-sm);padding:12px 14px;font-size:12.5px;color:var(--text);">
+                        <i class="bi bi-info-circle" style="color:#d97706;margin-right:6px;"></i>
+                        Get your keys from <a href="https://dashboard.razorpay.com/app/keys" target="_blank" style="color:#0d6efd;font-weight:600;">Razorpay Dashboard → Settings → API Keys</a>.
+                        Use <strong>Test keys</strong> first, switch to <strong>Live keys</strong> when ready.
+                    </div>
+
+                    <div>
+                        <div style="font-size:12.5px;font-weight:500;color:var(--muted);margin-bottom:7px;">Key ID <span style="color:#888;">(starts with rzp_test_ or rzp_live_)</span></div>
+                        <input type="text" name="razorpay_key_id" class="input-custom"
+                            placeholder="rzp_live_xxxxxxxxxxxx"
+                            value="<?= htmlspecialchars($rz['key_id']) ?>"
+                            autocomplete="off">
+                    </div>
+
+                    <div>
+                        <div style="font-size:12.5px;font-weight:500;color:var(--muted);margin-bottom:7px;">Key Secret <span style="color:#e74c3c;">⚠ Never share this</span></div>
+                        <div style="position:relative;">
+                            <input type="password" name="razorpay_key_secret" id="rzSecret" class="input-custom"
+                                placeholder="Your Razorpay secret key"
+                                value="<?= htmlspecialchars($rz['secret']) ?>"
+                                autocomplete="new-password"
+                                style="padding-right:44px;">
+                            <button type="button" onclick="toggleSecret()"
+                                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;" title="Show/hide">
+                                <i class="bi bi-eye" id="rzEyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($rz['key_id'])): ?>
+                    <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius-sm);padding:10px 14px;font-size:12.5px;">
+                        <i class="bi bi-check-circle" style="color:#16a34a;margin-right:5px;"></i>
+                        Keys saved. Mode: <strong><?= str_contains($rz['key_id'], '_test_') ? '🧪 Test Mode' : '🟢 Live Mode' ?></strong>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <button type="submit" class="btn-primary-custom" style="justify-content:center;padding:12px;">
+                    <i class="bi bi-save"></i> Save Payment Settings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleSecret() {
+    const f = document.getElementById('rzSecret');
+    const i = document.getElementById('rzEyeIcon');
+    if (f.type === 'password') { f.type = 'text';     i.className = 'bi bi-eye-slash'; }
+    else                        { f.type = 'password'; i.className = 'bi bi-eye'; }
+}
+</script>
 
 <?php require 'includes/footer.php'; ?>

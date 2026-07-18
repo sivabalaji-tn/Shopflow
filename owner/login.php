@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, name, password, shop_id FROM owners WHERE email = ?");
+    $stmt = $conn->prepare("SELECT o.id, o.name, o.password, s.id AS shop_id FROM owners o LEFT JOIN shops s ON s.owner_id = o.id WHERE o.email = ? LIMIT 1");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -25,6 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['shop_id']    = $owner['shop_id'];
         // Redirect to setup wizard if not completed
         $sid = $owner['shop_id'];
+        if (!$sid) {
+            // No shop created yet — go to register
+            header("Location: register.php");
+            exit;
+        }
         $setup = $conn->query("SELECT setting_value FROM shop_settings WHERE shop_id=$sid AND setting_key='setup_complete'")->fetch_assoc();
         if (!$setup || $setup['setting_value'] !== '1') {
             header("Location: setup.php");
