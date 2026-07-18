@@ -42,9 +42,9 @@ echo "✅ PHPMailer loaded\n";
 
 // ════════════════════════════════════════════
 // !! FILL THESE IN !!
-$YOUR_GMAIL    = 'sivathetechie24@gmail.com';   // your Gmail
-$YOUR_PASSWORD = 'yjqz ofcg htvl qxfu';   // 16-char App Password
-$SEND_TEST_TO  = 'sivabalaji800@gmail.com';  // where to receive test mail
+$YOUR_GMAIL    = 'use your mail';   // your Gmail
+$YOUR_PASSWORD = 'generate app password using google accounts';   // 16-char App Password
+$SEND_TEST_TO  = 'same mail is enough for testing purpose';  // where to receive test mail
 // ════════════════════════════════════════════
 
 if (str_contains($YOUR_GMAIL, 'your_gmail')) {
